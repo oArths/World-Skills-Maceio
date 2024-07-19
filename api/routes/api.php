@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\TesteController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('AlatechMachines/api')->group(function(){
-    Route::get('');
+    Route::get('/teste', [TesteController::class, 'get'])->name('get');
 });
