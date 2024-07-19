@@ -1,0 +1,78 @@
+[
+  {
+    "id": 1,
+    "name": "Intel"
+  },
+  {
+    "id": 2,
+    "name": "AMD"
+  },
+  {
+    "id": 3,
+    "name": "ASUS"
+  },
+  {
+    "id": 4,
+    "name": "Nvidia"
+  },
+  {
+    "id": 5,
+    "name": "Corsair"
+  },
+  {
+    "id": 6,
+    "name": "Kingston"
+  },
+  {
+    "id": 7,
+    "name": "HyperX"
+  },
+  {
+    "id": 8,
+    "name": "Gigabyte"
+  },
+  {
+    "id": 9,
+    "name": "ASRock"
+  },
+  {
+    "id": 10,
+    "name": "MSi"
+  },
+  {
+    "id": 11,
+    "name": "XPG"
+  },
+  {
+    "id": 12,
+    "name": "Samsung"
+  },
+  {
+    "id": 13,
+    "name": "Western Digital"
+  },
+  {
+    "id": 14,
+    "name": "Seagate"
+  },
+  {
+    "id": 15,
+    "name": "EVGA"
+  },
+  {
+    "id": 16,
+    "name": "Galax"
+  },
+  {
+    "id": 17,
+    "name": "XFX"
+  },
+  {
+    "id": 18,
+    "name": "Sapphire"
+  },
+  {
+    "id": 19,
+    "name": "PowerColor"
+  }
+]

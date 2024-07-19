@@ -1,0 +1,42 @@
+[
+  {
+    "machineId": 1,
+    "storageDeviceId": 1,
+    "amount": 1
+  },
+  {
+    "machineId": 1,
+    "storageDeviceId": 5,
+    "amount": 1
+  },
+  {
+    "machineId": 2,
+    "storageDeviceId": 2,
+    "amount": 1
+  },
+  {
+    "machineId": 3,
+    "storageDeviceId": 3,
+    "amount": 1
+  },
+  {
+    "machineId": 3,
+    "storageDeviceId": 4,
+    "amount": 1
+  },
+  {
+    "machineId": 4,
+    "storageDeviceId": 2,
+    "amount": 1
+  },
+  {
+    "machineId": 5,
+    "storageDeviceId": 2,
+    "amount": 1
+  },
+  {
+    "machineId": 6,
+    "storageDeviceId": 3,
+    "amount": 1
+  }
+]

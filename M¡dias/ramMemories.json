@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "HyperX Fury 32GB 3000MHz",
+    "imageUrl": "13",
+    "brandId": 7,
+    "size": 32768,
+    "ramMemoryTypeId": 2,
+    "frequency": 3000
+  },
+  {
+    "id": 2,
+    "name": "HyperX Fury 32GB 2666MHz",
+    "imageUrl": "14",
+    "brandId": 7,
+    "size": 32768,
+    "ramMemoryTypeId": 2,
+    "frequency": 2666
+  },
+  {
+    "id": 3,
+    "name": "HyperX Fury 32GB 2400MHz",
+    "imageUrl": "15",
+    "brandId": 7,
+    "size": 32768,
+    "ramMemoryTypeId": 2,
+    "frequency": 2400
+  },
+  {
+    "id": 4,
+    "name": "Corsair Vengeance 8GB 1600Mhz",
+    "imageUrl": "16",
+    "brandId": 5,
+    "size": 8192,
+    "ramMemoryTypeId": 1,
+    "frequency": 1600
+  },
+  {
+    "id": 5,
+    "name": "HyperX Fury 8GB 1600MHz",
+    "imageUrl": "17",
+    "brandId": 7,
+    "size": 8192,
+    "ramMemoryTypeId": 1,
+    "frequency": 1600
+  }
+]

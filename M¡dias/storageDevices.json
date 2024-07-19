@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "XPG Gammix S50",
+    "imageUrl": "18",
+    "brandId": 11,
+    "storageDeviceType": "ssd",
+    "size": 2048,
+    "storageDeviceInterface": "m2"
+  },
+  {
+    "id": 2,
+    "name": "Corsair Force Series MP600",
+    "imageUrl": "19",
+    "brandId": 5,
+    "storageDeviceType": "ssd",
+    "size": 2048,
+    "storageDeviceInterface": "m2"
+  },
+  {
+    "id": 3,
+    "name": "Samsung 970 EVO Plus",
+    "imageUrl": "20",
+    "brandId": 12,
+    "storageDeviceType": "ssd",
+    "size": 1024,
+    "storageDeviceInterface": "m2"
+  },
+  {
+    "id": 4,
+    "name": "WD Purple Surveillance 3.5'",
+    "imageUrl": "21",
+    "brandId": 13,
+    "storageDeviceType": "hdd",
+    "size": 12288,
+    "storageDeviceInterface": "sata"
+  },
+  {
+    "id": 5,
+    "name": "Seagate BarraCuda Pro",
+    "imageUrl": "22",
+    "brandId": 14,
+    "storageDeviceType": "hdd",
+    "size": 10240,
+    "storageDeviceInterface": "sata"
+  }
+]

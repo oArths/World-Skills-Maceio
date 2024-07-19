@@ -1,0 +1,80 @@
+[
+  {
+    "id": 1,
+    "name": "Infinity",
+    "description": "The highest and best you could get from a gamer machine.",
+    "imageUrl": "33",
+    "motherboardId": 1,
+    "processorId": 1,
+    "ramMemoryId": 1,
+    "ramMemoryAmount": 4,
+    "graphicCardId": 5,
+    "graphicCardAmount": 2,
+    "powerSupplyId": 1
+  },
+  {
+    "id": 2,
+    "name": "Shine",
+    "description": "Light gives a huge power to someone.",
+    "imageUrl": "35",
+    "motherboardId": 7,
+    "processorId": 2,
+    "ramMemoryId": 2,
+    "ramMemoryAmount": 2,
+    "graphicCardId": 1,
+    "graphicCardAmount": 1,
+    "powerSupplyId": 3
+  },
+  {
+    "id": 3,
+    "name": "Wave",
+    "description": "The sequences and perfection of waves bring this machine all the power electrons carry.",
+    "imageUrl": "37",
+    "motherboardId": 3,
+    "processorId": 3,
+    "ramMemoryId": 1,
+    "ramMemoryAmount": 2,
+    "graphicCardId": 3,
+    "graphicCardAmount": 1,
+    "powerSupplyId": 2
+  },
+  {
+    "id": 4,
+    "name": "Cerberus",
+    "description": "The unexpected will bring you a lot more than you expected.",
+    "imageUrl": "34",
+    "motherboardId": 4,
+    "processorId": 2,
+    "ramMemoryId": 3,
+    "ramMemoryAmount": 2,
+    "graphicCardId": 4,
+    "graphicCardAmount": 1,
+    "powerSupplyId": 4
+  },
+  {
+    "id": 5,
+    "name": "Iceberg",
+    "description": "An ice-solid experience for your gaming days.",
+    "imageUrl": "36",
+    "motherboardId": 7,
+    "processorId": 2,
+    "ramMemoryId": 1,
+    "ramMemoryAmount": 4,
+    "graphicCardId": 6,
+    "graphicCardAmount": 2,
+    "powerSupplyId": 2
+  },
+  {
+    "id": 6,
+    "name": "Soft",
+    "description": "The softer version that knows how to play hard.",
+    "imageUrl": "40",
+    "motherboardId": 9,
+    "processorId": 6,
+    "ramMemoryId": 5,
+    "ramMemoryAmount": 4,
+    "graphicCardId": 6,
+    "graphicCardAmount": 1,
+    "powerSupplyId": 5
+  }
+]

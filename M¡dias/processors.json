@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name": "i9-9980XE Skylake",
+    "imageUrl": "6",
+    "brandId": 1,
+    "socketTypeId": 3,
+    "cores": 18,
+    "baseFrequency": 3000,
+    "maxFrequency": 4400,
+    "cacheMemory": 25344,
+    "tdp": 165
+  },
+  {
+    "id": 2,
+    "name": "Ryzen Threadripper 2990WX",
+    "imageUrl": "7",
+    "brandId": 2,
+    "socketTypeId": 5,
+    "cores": 32,
+    "baseFrequency": 3000,
+    "maxFrequency": 4200,
+    "cacheMemory": 65536,
+    "tdp": 250
+  },
+  {
+    "id": 3,
+    "name": "Ryzen Threadripper 3960X",
+    "imageUrl": "9",
+    "brandId": 2,
+    "socketTypeId": 5,
+    "cores": 24,
+    "baseFrequency": 3800,
+    "maxFrequency": 4500,
+    "cacheMemory": 131072,
+    "tdp": 280
+  },
+  {
+    "id": 4,
+    "name": "i9-7920X Skylake",
+    "imageUrl": "11",
+    "brandId": 1,
+    "socketTypeId": 3,
+    "cores": 12,
+    "baseFrequency": 2900,
+    "maxFrequency": 4200,
+    "cacheMemory": 16896,
+    "tdp": 140
+  },
+  {
+    "id": 5,
+    "name": "i9-10920X Cascade Lake",
+    "imageUrl": "12",
+    "brandId": 1,
+    "socketTypeId": 3,
+    "cores": 12,
+    "baseFrequency": 3500,
+    "maxFrequency": 4600,
+    "cacheMemory": 19712,
+    "tdp": 165
+  },
+  {
+    "id": 6,
+    "name": " i9-9900KS Coffee Lake Refresh",
+    "imageUrl": "42",
+    "brandId": 1,
+    "socketTypeId": 2,
+    "cores": 8,
+    "baseFrequency": 4000,
+    "maxFrequency": 5000,
+    "cacheMemory": 16384,
+    "tdp": 127
+  }
+]

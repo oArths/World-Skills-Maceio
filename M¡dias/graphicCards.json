@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "GeForce RTX 2070 Super XC Ultra + Overclocked",
+    "imageUrl": "23",
+    "brandId": 15,
+    "memorySize": 8192,
+    "memoryType": "gddr6",
+    "minimumPowerSupply": 650,
+    "supportMultiGpu": 0
+  },
+  {
+    "id": 2,
+    "name": "GeForce RTX 2080 Super HOF 10th Anniversary Edition Black Teclab",
+    "imageUrl": "24",
+    "brandId": 16,
+    "memorySize": 8192,
+    "memoryType": "gddr6",
+    "minimumPowerSupply": 650,
+    "supportMultiGpu": 1
+  },
+  {
+    "id": 3,
+    "name": "GeForce RTX 2080 Ti KINGPIN Gaming",
+    "imageUrl": "25",
+    "brandId": 15,
+    "memorySize": 11264,
+    "memoryType": "gddr6",
+    "minimumPowerSupply": 650,
+    "supportMultiGpu": 1
+  },
+  {
+    "id": 4,
+    "name": "Radeon Red Devil RX5700",
+    "imageUrl": "26",
+    "brandId": 19,
+    "memorySize": 8192,
+    "memoryType": "gddr6",
+    "minimumPowerSupply": 650,
+    "supportMultiGpu": 0
+  },
+  {
+    "id": 5,
+    "name": "Radeon RX 5700 XT Nitro+",
+    "imageUrl": "27",
+    "brandId": 18,
+    "memorySize": 8192,
+    "memoryType": "gddr6",
+    "minimumPowerSupply": 600,
+    "supportMultiGpu": 1
+  },
+  {
+    "id": 6,
+    "name": "GeForce GTX 1070 Gaming ACX 3.0",
+    "imageUrl": "41",
+    "brandId": 15,
+    "memorySize": 8192,
+    "memoryType": "gddr5",
+    "minimumPowerSupply": 450,
+    "supportMultiGpu": 1
+  }
+]
