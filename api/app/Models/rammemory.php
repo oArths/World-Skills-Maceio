@@ -5,20 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class rammemory extends Model
 {
     use HasFactory;
-    
-    protected $table = 'user'; 
+
+    protected $table = 'rammemory';
 
     protected $fileable = [
         'id',
-        'password',
-        'accessToken',
-        'username',
+        'name',	'imageUrl',	'brandId',	'size',	'ramMemoryTypeId',	'frequency'
     ];
-
-
-
-
 }

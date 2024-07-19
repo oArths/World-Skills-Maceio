@@ -5,20 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class storagedevice extends Model
 {
     use HasFactory;
-    
-    protected $table = 'user'; 
 
+    protected $table = 'storagedevice';
     protected $fileable = [
-        'id',
-        'password',
-        'accessToken',
-        'username',
+        'id',	'name',	'imageUrl',	'brandId',	'storageDeviceType',	'size'	,'storageDeviceInterface'
     ];
-
-
-
-
 }
