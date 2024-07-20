@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TesteController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,4 +17,5 @@ use App\Http\Controllers\TesteController;
 
 Route::prefix('AlatechMachines/api')->group(function(){
     Route::get('/teste', [TesteController::class, 'get'])->name('get');
+    Route::post('/login', [UserController::class, 'login'])->name('login');
 });
