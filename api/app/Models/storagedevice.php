@@ -10,7 +10,7 @@ class storagedevice extends Model
     use HasFactory;
 
     protected $table = 'storagedevice';
-    protected $fileable = [
-        'id',	'name',	'imageUrl',	'brandId',	'storageDeviceType',	'size'	,'storageDeviceInterface'
+    protected $fillable  = [
+        'id',    'name',    'imageUrl',    'brandId',    'storageDeviceType',    'size', 'storageDeviceInterface'
     ];
 }

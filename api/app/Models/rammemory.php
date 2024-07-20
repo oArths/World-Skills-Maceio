@@ -11,8 +11,8 @@ class rammemory extends Model
 
     protected $table = 'rammemory';
 
-    protected $fileable = [
+    protected $fillable  = [
         'id',
-        'name',	'imageUrl',	'brandId',	'size',	'ramMemoryTypeId',	'frequency'
+        'name',    'imageUrl',    'brandId',    'size',    'ramMemoryTypeId',    'frequency'
     ];
 }

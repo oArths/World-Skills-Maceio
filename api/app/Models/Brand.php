@@ -10,7 +10,7 @@ class Brand extends Model
     use HasFactory;
 
     protected $table = 'brand';
-    protected $fileable = [
+    protected $fillable  = [
         'id',
         'name'
 

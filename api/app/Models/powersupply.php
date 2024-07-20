@@ -11,12 +11,12 @@ class powersupply extends Model
 
     protected $table = 'powersupply';
 
-    protected $fileable = [
-        'id',	
+    protected $fillable  = [
+        'id',
         'name',
         '	imageUrl',
         '	brandId',
-        	'potency	',
+        'potency	',
         'badge80Plus',
     ];
 }

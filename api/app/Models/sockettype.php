@@ -10,7 +10,7 @@ class sockettype extends Model
     use HasFactory;
     protected $table = 'sockettype';
 
-    protected $fileable = [
+    protected $fillable  = [
         'id', 'name'
     ];
 }

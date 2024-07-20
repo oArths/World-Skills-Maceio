@@ -11,18 +11,18 @@ class machine extends Model
 
     protected $table = 'machine';
 
-    protected $fileable = [
-'        id',
-	'name',
-    	'description',
+    protected $fillable  = [
+        '        id',
+        'name',
+        'description',
         '	imageUrl',
-        	'motherboardId',
-        	'processorId',
-            '	ramMemoryId',	
-            'ramMemoryAmount',
-            	'graphicCardId',
-                	'graphicCardAmount',
-                    	'powerSupplyId'	,
+        'motherboardId',
+        'processorId',
+        '	ramMemoryId',
+        'ramMemoryAmount',
+        'graphicCardId',
+        'graphicCardAmount',
+        'powerSupplyId',
 
 
     ];

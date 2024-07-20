@@ -11,7 +11,7 @@ class rammemorytype extends Model
 
     protected $table = 'rammemorytype';
 
-    protected $fileable = [
-        'id',	'name'
+    protected $fillable  = [
+        'id',    'name'
     ];
 }

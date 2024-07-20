@@ -9,15 +9,14 @@ class graphiccard extends Model
 {
     use HasFactory;
     protected $table = 'graphiccard';
-    protected $fileable = [
-        'id',	
-        'name',	
+    protected $fillable  = [
+        'id',
+        'name',
         'imageUrl',
-        	'brandId',
-            'memorySize',	
-            'memoryType',
-            	'minimumPowerSupply',
-                	'supportMultiGpu',
+        'brandId',
+        'memorySize',
+        'memoryType',
+        'minimumPowerSupply',
+        'supportMultiGpu',
     ];
-
 }

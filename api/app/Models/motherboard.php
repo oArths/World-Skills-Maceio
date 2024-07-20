@@ -10,10 +10,10 @@ class motherboard extends Model
     use HasFactory;
 
     protected $table = 'motherboard';
-    protected $fileable = [
+    protected $fillable  = [
         'id	',
         'name',
-        	'imageUrl',
-            	'brandId',	'socketTypeId'	,'ramMemoryTypeId	','ramMemorySlots','maxTdp	','sataSlots'	,'m2Slots',	'pciSlots',
+        'imageUrl',
+        'brandId',    'socketTypeId', 'ramMemoryTypeId	', 'ramMemorySlots', 'maxTdp	', 'sataSlots', 'm2Slots',    'pciSlots',
     ];
 }

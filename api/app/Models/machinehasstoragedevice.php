@@ -10,7 +10,7 @@ class machinehasstoragedevice extends Model
     use HasFactory;
     protected $table = 'machinehasstoragedevice';
 
-    protected $fileable = [
-        'machineId'	,'storageDeviceId'	,'amoun',
+    protected $fillable  = [
+        'machineId', 'storageDeviceId', 'amoun',
     ];
 }

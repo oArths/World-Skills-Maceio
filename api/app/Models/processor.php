@@ -10,13 +10,13 @@ class processor extends Model
     use HasFactory;
 
     protected $table = 'processor';
-    protected $fileable = [
-        'id',	
-        'name',	
+    protected $fillable  = [
+        'id',
+        'name',
         'imageUrl',
-        '	brandId',	
+        '	brandId',
         'socketTypeId',
-        '	cores',	'baseFrequency',	'maxFrequency',	'cacheMemory',	'tdp'
+        '	cores',    'baseFrequency',    'maxFrequency',    'cacheMemory',    'tdp'
 
     ];
 }
