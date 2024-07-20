@@ -4,82 +4,42 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\JwtController;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+// use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    public function login(Request $parms){
+        $jwt = new JwtController;
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if(!isset($parms['username'])  || !isset($parms['password'])){
+            return error('message','Credenciais inválidas', 422 );
+        }
+        if(strlen($parms['username']) < 1  || strlen($parms['password']) < 1){
+            return error('message','Credenciais inválidas', 422 );
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function show(User $user)
-    {
-        //
-    }
+        $user = User::where('username', $parms['username'])->first();
+        
+        if(!$user){
+            return error('message','Credenciais inválidas', 422 );
+        }
+        if(strlen($user->password) !== 64){
+            $hashPassword = hash('sha256', $user->password);
+            $user->update(['password'=>  $hashPassword]); 
+        }
+        $user = User::where('username', $parms['username'])->first();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
-    {
-        //
+        if(hash('sha256', $parms['password']) !== $user->password){
+            return error('message','Credenciais inválidasg', 422 );
+        }
+    
+        $token = $jwt->Token($parms['username']);
+        
+        return  error('token', $token, 200 );
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
-    {
-        //
-    }
+   
 }
