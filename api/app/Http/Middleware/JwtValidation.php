@@ -18,7 +18,7 @@ class JwtValidation
     private $key;
 
     public function __construct(){
-        $this->key = env('JWT');
+        $this->key = env("JWT");
 
     }
 
@@ -26,17 +26,30 @@ class JwtValidation
 
         $data = $this->getToken($request);
         if(!$data){
-            error('header não presente no request', 401);
+           return error("message",'Necessário estar autenticado no sistema', 401);
         }
+
         $token = $this->validToken($data);
         if(!$token){
-            error('token invalido ou expirado', 403);
+            return error("message",'Token inválido', 403);
         }
-        $request = merge(['auth' => (array) $token]);
+        $request->merge(['auth' => (array) $token]);
+
         return $next($request);
     }
+    public function getToken($request){
+        $data = $request->header('Authorization');
+
+        if(empty($data)) {
+            return false;
+        }
+        $token = explode(' ', $data);
+
+
+        return $token[1];
+    }
     public function validToken($token){
-        
+
         list($header, $payload, $sing) = explode('.', $token);
         
         $decPayload = json_decode(base64_decode($payload));
@@ -53,13 +66,5 @@ class JwtValidation
 
     }
 
-    public function getToken($request){
-        $data = $request->header('Authorization');
-        
-        if (empty($data)) {
-            return false;
-        }
-        $token = explode(' ', $data);
-        return $token[1];
-    }
+
 }
