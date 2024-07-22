@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TesteController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Machine;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,6 +16,7 @@ use App\Http\Controllers\UserController;
 */
 
 Route::prefix('AlatechMachines/api')->group(function(){
-    Route::get('/teste', [TesteController::class, 'get'])->name('get');
-    Route::post('/login', [UserController::class, 'login'])->name('login');
+    Route::post('/login', [UserController::class, 'login']);
+    Route::delete('/delete', [UserController::class, 'logOutUser'])->middleware('jwt');
+    Route::get('/images/{id?}', [Machine::class, 'getImages']);
 });
