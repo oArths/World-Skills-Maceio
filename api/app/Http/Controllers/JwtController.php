@@ -32,7 +32,7 @@ class JwtController extends Controller
         $payload = base64_encode(json_encode($payload));
 
         $sing = base64_encode(hash_hmac('sha256', $header . "." . $payload, $this->key, true));
-        $token = "Bearer " . $header . "." . $payload . $sing;
+        $token = "Bearer " . $header . "." . $payload . "." . $sing;
 
         $user = User::where('username', $username)->first();
 
