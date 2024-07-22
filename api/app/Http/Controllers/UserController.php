@@ -41,5 +41,10 @@ class UserController extends Controller
         
         return  error('token', $token, 200 );
     }
-   
+   public function logOutUser(Request $user){
+       $user = User::where('username', $user->auth['username'])->first();
+       $user->update(['accessToken' => 'null']);
+       return error('message', "Logout com sucesso", 200);
+
+   }
 }
