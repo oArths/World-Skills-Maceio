@@ -197,143 +197,345 @@ class AllController extends Controller
             }
         }
         $results =  array_slice($all, $offset, $pagesize);
-        return $results;
+        return response()->json([
+            $results
+        ], 200);
     }
-    public function ListItems(Request $params)
-    {
+    // public function VerifyComp(Request $machine){
 
+    // }
+    public function Listmotherboards(Request $params){
         $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
         $pagesize =  $params->pageSize ??  20;
         $pages  =   $params->page ?? 1;
         $offset = ($pages - 1)  * $pagesize;
-
+        
+        $data = motherboard::all();
         $all = [];
-        $models = [
-            'motherboards' => motherboard::class,
-            'processor' => processor::class,
-            'rammemory' => rammemory::class,
-            'storagedevice' => storagedevice::class,
-            'graphiccard' => graphiccard::class,
-            'powersupply' => powersupply::class,
-            'brand' => Brand::class,
-            'machine' => machine::class,
-        ];
+        foreach ($data as $item) {
+            $all[] = [
+                'name' => $item->name,
+                'imageUrl' => $url . $item->imageUrl,
+                'brandId' => $item->brandId,
+                'socketTypeId' => $item->socketTypeId,
+                'ramMemoryTypeId' => $item->ramMemoryTypeId,
+                'ramMemorySlots' => $item->ramMemorySlots,
+                'maxTdp' => $item->maxTdp,
+                'sataSlots' => $item->sataSlots,
+                'm2Slots' => $item->m2Slots,
+                'pciSlots' => $item->pciSlots,
+            ];
+        }
 
-        foreach ($models as $category => $modelsClass) {
-            $data = $modelsClass::get();
+        $results = array_slice($all, $offset, $pagesize);
+        return response()->json([$results],200);
 
-            foreach ($data as $item) {
-                $categoryDetaisl = [];
+    }
+    public function Listprocessor(Request $params){
+        $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
-                switch ($category) {
-                    case 'motherboards':
-                        $categoryDetaisl = [
-                            'brandId' => $item->brandId,
-                            'socketTypeId' => $item->socketTypeId,
-                            'ramMemoryTypeId' => $item->ramMemoryTypeId,
-                            'ramMemorySlots' => $item->ramMemorySlots,
-                            'maxTdp' => $item->maxTdp,
-                            'sataSlots' => $item->sataSlots,
-                            'm2Slots' => $item->m2Slots,
-                            'pciSlots' => $item->pciSlots,
-                        ];
-                        break;
-                    case 'processor':
-                        $categoryDetaisl = [
-                            'brandId' => $item->brandId,
-                            'socketTypeId' => $item->socketTypeId,
-                            'cores' => $item->cores,
-                            'baseFrequency' => $item->baseFrequency,
-                            'maxFrequency' => $item->maxFrequency,
-                            'cacheMemory' => $item->cacheMemory,
-                            'tdp' => $item->tdp,
-                        ];
-                        break;
-                    case 'rammemory':
-                        $categoryDetaisl = [
-                            'brandId' => $item->brandId,
+        $pagesize =  $params->pageSize ??  20;
+        $pages  =   $params->page ?? 1;
+        $offset = ($pages - 1)  * $pagesize;
+        
+        $data = processor::all();
+        $all = [];
+        foreach ($data as $item) {
+            $all[] = [
+                'name' => $item->name,
+                'imageUrl' => $url . $item->imageUrl,
+                'brandId' => $item->brandId,
+                'socketTypeId' => $item->socketTypeId,
+                'cores' => $item->cores,
+                'baseFrequency' => $item->baseFrequency,
+                'maxFrequency' => $item->maxFrequency,
+                'cacheMemory' => $item->cacheMemory,
+                'tdp' => $item->tdp,
+            ];
+        }
+
+        $results = array_slice($all, $offset, $pagesize);
+        return response()->json(($results),200);
+
+    }
+    public function Listrammemory(Request $params){
+        $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
+
+        $pagesize =  $params->pageSize ??  20;
+        $pages  =   $params->page ?? 1;
+        $offset = ($pages - 1)  * $pagesize;
+        
+        $data = rammemory::all();
+        $all = [];
+        foreach ($data as $item) {
+            $all[] = [
+                'name' => $item->name,
+                'imageUrl' => $url . $item->imageUrl,
+                'brandId' => $item->brandId,
                             'size' => $item->size,
                             'ramMemoryTypeId ' => $item->ramMemoryTypeId,
                             'frequency' => $item->frequency,
-                        ];
-                        break;
-                    case 'storagedevice':
-                        $categoryDetaisl = [
-                            'brandId' => $item->brandId,
-                            'size' => $item->size,
-                            'storageDeviceType ' => $item->storageDeviceType,
-                            'storageDeviceInterface' => $item->storageDeviceInterface,
-                        ];
-                        break;
-                    case 'graphiccard':
-                        $categoryDetaisl = [
-                            'brandId' => $item->brandId,
-                            'memorySize' => $item->memorySize,
-                            'memoryType ' => $item->memoryType,
-                            'minimumPowerSupply' => $item->minimumPowerSupply,
-                            'supportMultiGpu' => $item->supportMultiGpu,
-                        ];
-                        break;
-                    case 'powersupply':
-                        $categoryDetaisl = [
-                            'brandId' => $item->brandId,
-                            'potency' => $item->potency,
-                            'badge80Plus ' => $item->badge80Plus,
-                        ];
-                        break;
-                    case 'brand':
-                        $categoryDetaisl = [
-                            'brandId' => $item->brandId,
-                            'potency' => $item->potency,
-                            'badge80Plus ' => $item->badge80Plus,
-                        ];
-                        break;
-                    case 'machine':
-                        $categoryDetaisl = [
-                            'motherboardId' => $item->motherboardId,
-                            'processorId' => $item->processorId,
-                            'ramMemoryId' => $item->ramMemoryId,
-                            'ramMemoryAmount' => $item->ramMemoryAmount,
-                            'graphicCardId' => $item->graphicCardId,
-                            'graphicCardAmount' => $item->graphicCardAmount,
-                            'powerSupplyId' => $item->powerSupplyId,
-                        ];
-                        break;
-                    default:
-                        break;
-                }
-
-                switch ($category) {
-                    case 'machine':
-                        $all[] = [
-                            'category' => $category,
-                            'name' => $item->name,
-                            'description' => $item->description,
-                            'Detalhes de Entidades' => $categoryDetaisl
-                        ];
-                        break;
-
-                    case 'brand':
-                        $all[] = [
-                            'category' => $category,
-                            'name' => $item->name,
-                        ];
-                        break;
-
-                    default:
-                        $all[] = [
-                            'category' => $category,
-                            'name' => $item->name,
-                            'imageUrl' => $url . $item->imageUrl,
-                            'Detalhes de Entidades' => $categoryDetaisl
-                        ];
-                        break;
-                }
-            }
+            ];
         }
-        $data = array_slice($all, $offset, $pagesize);
 
-        return $data;
+        $results = array_slice($all, $offset, $pagesize);
+        return response()->json(($results),200);
+
     }
+    public function Liststoragedevice(Request $params){
+        $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
+
+        $pagesize =  $params->pageSize ??  20;
+        $pages  =   $params->page ?? 1;
+        $offset = ($pages - 1)  * $pagesize;
+        
+        $data = storagedevice::all();
+        $all = [];
+        foreach ($data as $item) {
+            $all[] = [
+                'name' => $item->name,
+                'imageUrl' => $url . $item->imageUrl,
+                'brandId' => $item->brandId,
+                'size' => $item->size,
+                'storageDeviceType ' => $item->storageDeviceType,
+                'storageDeviceInterface' => $item->storageDeviceInterface,
+            ];
+        }
+
+        $results = array_slice($all, $offset, $pagesize);
+        return response()->json(($results),200);
+
+    }
+    public function Listgraphiccard(Request $params){
+        $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
+
+        $pagesize =  $params->pageSize ??  20;
+        $pages  =   $params->page ?? 1;
+        $offset = ($pages - 1)  * $pagesize;
+        
+        $data = graphiccard::all();
+        $all = [];
+        foreach ($data as $item) {
+            $all[] = [
+                'name' => $item->name,
+                'imageUrl' => $url . $item->imageUrl,
+                'brandId' => $item->brandId,
+                'memorySize' => $item->memorySize,
+                'memoryType ' => $item->memoryType,
+                'minimumPowerSupply' => $item->minimumPowerSupply,
+                'supportMultiGpu' => $item->supportMultiGpu,
+            ];
+        }
+
+        $results = array_slice($all, $offset, $pagesize);
+        return response()->json(($results),200);
+
+    }
+    public function Listpowersupply(Request $params){
+        $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
+
+        $pagesize =  $params->pageSize ??  20;
+        $pages  =   $params->page ?? 1;
+        $offset = ($pages - 1)  * $pagesize;
+        
+        $data = powersupply::all();
+        $all = [];
+        foreach ($data as $item) {
+            $all[] = [
+                'name' => $item->name,
+                'imageUrl' => $url . $item->imageUrl,
+                'brandId' => $item->brandId,
+                'potency' => $item->potency,
+                'badge80Plus ' => $item->badge80Plus,
+            ];
+        }
+
+        $results = array_slice($all, $offset, $pagesize);
+        return response()->json(($results),200);
+
+    }
+    public function Listbrand(Request $params){
+
+        $pagesize =  $params->pageSize ??  20;
+        $pages  =   $params->page ?? 1;
+        $offset = ($pages - 1)  * $pagesize;
+        
+        $data = Brand::all();
+        $all = [];
+        foreach ($data as $item) {
+            $all[] = [
+                'name' => $item->name,
+            ];
+        }
+
+        $results = array_slice($all, $offset, $pagesize);
+        return response()->json(($results),200);
+
+    }
+    public function Listmachine(Request $params){
+        $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
+
+        $pagesize =  $params->pageSize ??  20;
+        $pages  =   $params->page ?? 1;
+        $offset = ($pages - 1)  * $pagesize;
+        
+        $data = machine::all();
+        $all = [];
+        foreach ($data as $item) {
+            $all[] = [
+                'name' => $item->name,
+                'imageUrl' => $url . $item->imageUrl,
+                'description' => $item->description,
+                'motherboardId' => $item->motherboardId,
+                'processorId' => $item->processorId,
+                'ramMemoryId' => $item->ramMemoryId,
+                'ramMemoryAmount' => $item->ramMemoryAmount,
+                'graphicCardId' => $item->graphicCardId,
+                'graphicCardAmount' => $item->graphicCardAmount,
+                'powerSupplyId' => $item->powerSupplyId,
+            ];
+        }
+
+        $results = array_slice($all, $offset, $pagesize);
+        return response()->json(($results),200);
+
+    }
+    // public function ListItems(Request $params)
+    // {
+
+    //     $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
+
+    //     $pagesize =  $params->pageSize ??  20;
+    //     $pages  =   $params->page ?? 1;
+    //     $offset = ($pages - 1)  * $pagesize;
+
+    //     $all = [];
+    //     $models = [
+    //         'motherboards' => motherboard::class,
+    //         'processor' => processor::class,
+    //         'rammemory' => rammemory::class,
+    //         'storagedevice' => storagedevice::class,
+    //         'graphiccard' => graphiccard::class,
+    //         'powersupply' => powersupply::class,
+    //         'brand' => Brand::class,
+    //         'machine' => machine::class,
+    //     ];
+
+    //     foreach ($models as $category => $modelsClass) {
+    //         $data = $modelsClass::get();
+
+    //         foreach ($data as $item) {
+    //             $categoryDetaisl = [];
+
+    //             switch ($category) {
+    //                 case 'motherboards':
+    //                     $categoryDetaisl = [
+    //                         'brandId' => $item->brandId,
+    //                         'socketTypeId' => $item->socketTypeId,
+    //                         'ramMemoryTypeId' => $item->ramMemoryTypeId,
+    //                         'ramMemorySlots' => $item->ramMemorySlots,
+    //                         'maxTdp' => $item->maxTdp,
+    //                         'sataSlots' => $item->sataSlots,
+    //                         'm2Slots' => $item->m2Slots,
+    //                         'pciSlots' => $item->pciSlots,
+    //                     ];
+    //                     break;
+    //                 case 'processor':
+    //                     $categoryDetaisl = [
+    //                         'brandId' => $item->brandId,
+    //                         'socketTypeId' => $item->socketTypeId,
+    //                         'cores' => $item->cores,
+    //                         'baseFrequency' => $item->baseFrequency,
+    //                         'maxFrequency' => $item->maxFrequency,
+    //                         'cacheMemory' => $item->cacheMemory,
+    //                         'tdp' => $item->tdp,
+    //                     ];
+    //                     break;
+    //                 case 'rammemory':
+    //                     $categoryDetaisl = [
+    //                         'brandId' => $item->brandId,
+    //                         'size' => $item->size,
+    //                         'ramMemoryTypeId ' => $item->ramMemoryTypeId,
+    //                         'frequency' => $item->frequency,
+    //                     ];
+    //                     break;
+    //                 case 'storagedevice':
+    //                     $categoryDetaisl = [
+    //                         'brandId' => $item->brandId,
+    //                         'size' => $item->size,
+    //                         'storageDeviceType ' => $item->storageDeviceType,
+    //                         'storageDeviceInterface' => $item->storageDeviceInterface,
+    //                     ];
+    //                     break;
+    //                 case 'graphiccard':
+    //                     $categoryDetaisl = [
+    //                         'brandId' => $item->brandId,
+    //                         'memorySize' => $item->memorySize,
+    //                         'memoryType ' => $item->memoryType,
+    //                         'minimumPowerSupply' => $item->minimumPowerSupply,
+    //                         'supportMultiGpu' => $item->supportMultiGpu,
+    //                     ];
+    //                     break;
+    //                 case 'powersupply':
+    //                     $categoryDetaisl = [
+    //                         'brandId' => $item->brandId,
+    //                         'potency' => $item->potency,
+    //                         'badge80Plus ' => $item->badge80Plus,
+    //                     ];
+    //                     break;
+    //                 case 'brand':
+    //                     $categoryDetaisl = [
+    //                         'brandId' => $item->brandId,
+    //                         'potency' => $item->potency,
+    //                         'badge80Plus ' => $item->badge80Plus,
+    //                     ];
+    //                     break;
+    //                 case 'machine':
+    //                     $categoryDetaisl = [
+    //                         'motherboardId' => $item->motherboardId,
+    //                         'processorId' => $item->processorId,
+    //                         'ramMemoryId' => $item->ramMemoryId,
+    //                         'ramMemoryAmount' => $item->ramMemoryAmount,
+    //                         'graphicCardId' => $item->graphicCardId,
+    //                         'graphicCardAmount' => $item->graphicCardAmount,
+    //                         'powerSupplyId' => $item->powerSupplyId,
+    //                     ];
+    //                     break;
+    //                 default:
+    //                     break;
+    //             }
+
+    //             switch ($category) {
+    //                 case 'machine':
+    //                     $all[] = [
+    //                         'category' => $category,
+    //                         'name' => $item->name,
+    //                         'description' => $item->description,
+    //                         'Detalhes de Entidades' => $categoryDetaisl
+    //                     ];
+    //                     break;
+
+    //                 case 'brand':
+    //                     $all[] = [
+    //                         'category' => $category,
+    //                         'name' => $item->name,
+    //                     ];
+    //                     break;
+
+    //                 default:
+    //                     $all[] = [
+    //                         'category' => $category,
+    //                         'name' => $item->name,
+    //                         'imageUrl' => $url . $item->imageUrl,
+    //                         'Detalhes de Entidades' => $categoryDetaisl
+    //                     ];
+    //                     break;
+    //             }
+    //         }
+    //     }
+    //     $data = array_slice($all, $offset, $pagesize);
+
+    //     return response()->json([$data], 200);
+    // }
 }
