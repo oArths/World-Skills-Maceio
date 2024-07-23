@@ -44,13 +44,17 @@ class JwtValidation
             return false;
         }
         $token = explode(' ', $data);
+        $valid = explode('.', $token[1]);
+
+        if(count($valid) === 3 && strstr($token[1], '.')){
+            return $token[1];
+        }
+        return false;
 
 
-        return $token[1];
     }
     public function validToken($token){
-
-        list($header, $payload, $sing) = explode('.', $token);
+     list($header, $payload, $sing) = explode('.', $token);
         
         $decPayload = json_decode(base64_decode($payload));
         $validSing = base64_encode(hash_hmac('sha256', $header . "." . $payload, $this->key, true));
