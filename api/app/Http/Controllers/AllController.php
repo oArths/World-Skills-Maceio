@@ -50,34 +50,154 @@ class AllController extends Controller
         header("Content-type : $mimeType");
         return  error('a', $encode);
     }
-    public function removeMachine( $id = null){
+    public function removeMachine($id = null)
+    {
 
-        if(!$id){
-            return error('message:' ,'Modelo de máquina não encontrado', 404 );
+        if (!$id) {
+            return error('message:', 'Modelo de máquina não encontrado', 404);
         }
 
         $machine =  machine::find($id);
-        if(!$machine){
-            return error('message:' ,'Modelo de máquina não encontrado', 404 );
+        if (!$machine) {
+            return error('message:', 'Modelo de máquina não encontrado', 404);
         }
 
-        return error('', '',204);
-
+        return error('', '', 204);
     }
-    public function Searchitem(Request $params){
+    public function Searchitem(Request $params)
+    {
 
         $a = $_SERVER['REQUEST_URI'];
         $clear = explode('?', $a);
         $clear = explode('/', $clear[0]);
         $search = end($clear);
+        $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
+
 
         $pagesize = $params->pagesize ?? 20;
         $page = $params->page ?? 1;
+
+        $offset = ($page - 1) * $pagesize;
         $q = $params->q ?? null;
-        
-        $exist = DB::table($search)->where('name', "$q")->get();
-        // $exist = graphiccard::where('name', 'GeForce RTX 2070 Super XC Ultra + Overclocked')->get();
-        return $exist;
+
+
+        if (!$q) {
+            $exist = DB::table($search)->get();
+        } else {
+            $exist = DB::table($search)->where('name', "$q")->get();
+        }
+        $all = [];
+
+        foreach ($exist as $category ) {
+
+            foreach ($exist as $item) {
+                $categoryDetaisl = [];
+
+                switch ($search) {
+                    case 'motherboard':
+                        $categoryDetaisl = [
+                            'brandId' => $item->brandId,
+                            'socketTypeId' => $item->socketTypeId,
+                            'ramMemoryTypeId' => $item->ramMemoryTypeId,
+                            'ramMemorySlots' => $item->ramMemorySlots,
+                            'maxTdp' => $item->maxTdp,
+                            'sataSlots' => $item->sataSlots,
+                            'm2Slots' => $item->m2Slots,
+                            'pciSlots' => $item->pciSlots,
+                        ];
+                        break;
+                    case 'processor':
+                        $categoryDetaisl = [
+                            'brandId' => $item->brandId,
+                            'socketTypeId' => $item->socketTypeId,
+                            'cores' => $item->cores,
+                            'baseFrequency' => $item->baseFrequency,
+                            'maxFrequency' => $item->maxFrequency,
+                            'cacheMemory' => $item->cacheMemory,
+                            'tdp' => $item->tdp,
+                        ];
+                        break;
+                    case 'rammemory':
+                        $categoryDetaisl = [
+                            'brandId' => $item->brandId,
+                            'size' => $item->size,
+                            'ramMemoryTypeId ' => $item->ramMemoryTypeId,
+                            'frequency' => $item->frequency,
+                        ];
+                        break;
+                    case 'storagedevice':
+                        $categoryDetaisl = [
+                            'brandId' => $item->brandId,
+                            'size' => $item->size,
+                            'storageDeviceType ' => $item->storageDeviceType,
+                            'storageDeviceInterface' => $item->storageDeviceInterface,
+                        ];
+                        break;
+                    case 'graphiccard':
+                        $categoryDetaisl = [
+                            'brandId' => $item->brandId,
+                            'memorySize' => $item->memorySize,
+                            'memoryType ' => $item->memoryType,
+                            'minimumPowerSupply' => $item->minimumPowerSupply,
+                            'supportMultiGpu' => $item->supportMultiGpu,
+                        ];
+                        break;
+                    case 'powersupply':
+                        $categoryDetaisl = [
+                            'brandId' => $item->brandId,
+                            'potency' => $item->potency,
+                            'badge80Plus ' => $item->badge80Plus,
+                        ];
+                        break;
+                    case 'brand':
+                        $categoryDetaisl = [
+                            'brandId' => $item->brandId,
+                            'potency' => $item->potency,
+                            'badge80Plus ' => $item->badge80Plus,
+                        ];
+                        break;
+                    case 'machine':
+                        $categoryDetaisl = [
+                            'motherboardId' => $item->motherboardId,
+                            'processorId' => $item->processorId,
+                            'ramMemoryId' => $item->ramMemoryId,
+                            'ramMemoryAmount' => $item->ramMemoryAmount,
+                            'graphicCardId' => $item->graphicCardId,
+                            'graphicCardAmount' => $item->graphicCardAmount,
+                            'powerSupplyId' => $item->powerSupplyId,
+                        ];
+                        break;
+                    default:
+                        break;
+                }
+
+                switch ($category) {
+                    case 'machine':
+                        $all[] = [
+                            'name' => $item->name,
+                            'description' => $item->description,
+                            'Detalhes de Entidades' => $categoryDetaisl
+                        ];
+                        break;
+
+                    case 'brand':
+                        $all[] = [
+                            'name' => $item->name,
+                        ];
+                        break;
+
+                    default:
+                        $all[] = [
+                            'name' => $item->name,
+                            'imageUrl' => $url . $item->imageUrl,
+                            'Detalhes de Entidades' => $categoryDetaisl
+                        ];
+                        break;
+                }
+            }
+        }
+        $results =  array_slice($all, $offset, $pagesize);
+        return $results;
     }
     public function ListItems(Request $params)
     {
