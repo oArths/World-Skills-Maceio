@@ -13,7 +13,7 @@ use App\Models\storagedevice;
 use App\Models\graphiccard;
 use App\Models\powersupply;
 use App\Models\machine;
-
+use PhpParser\Node\Stmt\Return_;
 
 class AllController extends Controller
 {
@@ -201,9 +201,27 @@ class AllController extends Controller
             $results
         ], 200);
     }
-    // public function VerifyComp(Request $machine){
+    public function VerifyComp(Request $machine){
 
-    // }
+        $motherboardId  = $machine->motherboardId ?? null;
+        $powerSupplyId  = $machine->powerSupplyId ?? null;
+        $processorId  = $machine->processorId ?? null;
+        $ramMemoryId  = $machine->ramMemoryId ?? null; 
+        $ramMemoryAmount  = $machine->ramMemoryAmount ?? null; 
+        $storageDeviceId  = $machine->storageDevices['storageDeviceId'] ?? null; 
+        $amount  = $machine->storageDevices['amount'] ?? null; 
+        $graphicCardId  = $machine->graphicCardId ?? null; 
+        $graphicCardAmount  = $machine->graphicCardAmount ?? null; 
+
+        if(!$motherboardId || !$powerSupplyId){
+            return data([
+                'motherboardId' => 'É necessario ao menos uma motherboardId',
+                'powerSupplyId' => 'É necessario ao menos uma powerSupplyId'
+            ]);
+        }
+
+        return $storageDeviceId;
+    }
     public function Listmotherboards(Request $params){
         $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
