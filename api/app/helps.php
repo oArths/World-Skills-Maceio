@@ -10,3 +10,6 @@ function error($messsageName, $messsage, $status = 400 ){
         $messsageName => $messsage,
     ], $status);
 }
+function data($data, $status = 400 ){
+    return response()->json([$data], $status);
+}
