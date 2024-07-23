@@ -88,7 +88,7 @@ class AllController extends Controller
         }
         $all = [];
 
-        foreach ($exist as $category ) {
+        foreach ($exist as $category) {
 
             foreach ($exist as $item) {
                 $categoryDetaisl = [];
@@ -201,38 +201,119 @@ class AllController extends Controller
             $results
         ], 200);
     }
-    public function VerifyComp(Request $machine){
+    public function VerifyComp(Request $machine)
+    {
 
         $motherboardId  = $machine->motherboardId ?? null;
         $powerSupplyId  = $machine->powerSupplyId ?? null;
         $processorId  = $machine->processorId ?? null;
-        $ramMemoryId  = $machine->ramMemoryId ?? null; 
-        $ramMemoryAmount  = $machine->ramMemoryAmount ?? null; 
-        $storageDeviceId  = $machine->storageDevices['storageDeviceId'] ?? null; 
-        $amount  = $machine->storageDevices['amount'] ?? null; 
-        $graphicCardId  = $machine->graphicCardId ?? null; 
-        $graphicCardAmount  = $machine->graphicCardAmount ?? null; 
+        $ramMemoryId  = $machine->ramMemoryId ?? null;
+        $ramMemoryAmount  = $machine->ramMemoryAmount ?? null;
+        $storageDeviceId  = $machine->storageDevices['storageDeviceId'] ?? null;
+        $amount  = $machine->storageDevices['amount'] ?? null;
+        $graphicCardId  = $machine->graphicCardId ?? null;
+        $graphicCardAmount  = $machine->graphicCardAmount ?? null;
 
-        if(!$motherboardId || !$powerSupplyId){
+        if (!$motherboardId) {
             return data([
                 'motherboardId' => 'É necessario ao menos uma motherboardId',
+            ]);
+        }
+        if (!$powerSupplyId) {
+            return data([
                 'powerSupplyId' => 'É necessario ao menos uma powerSupplyId'
             ]);
         }
 
-        return $storageDeviceId;
+        //soquete placa mae porcessador
+        $motherboard = motherboard::find($motherboardId);
+        $power = powersupply::find($powerSupplyId);
+        $processor = processor::find($processorId);
+        $memory = rammemory::find($ramMemoryId);
+        $store = storagedevice::find($storageDeviceId);
+        $grafic = graphiccard::find($graphicCardId);
+        if ($motherboard->socketTypeId !== $processor->socketTypeId) {
+            return data([
+                'motherboard' => 'Tipo de soquete da placa-mãe é diferente do tipo de soquete do processador'
+            ], 422);
+        }
+        if ($processor->tdp > $motherboard->maxTdp) {
+            return data([
+                'processor' => 'TDP do processador é maior do que o TDP máximo suportado pela placa-mãe'
+            ], 422);
+        }
+        if ($memory->ramMemoryTypeId !== $motherboard->ramMemoryTypeId) {
+            return data([
+                'ramMemory' => 'Tipo de memória RAM da placa-mãe é diferente do tipo da memória RAM'
+            ], 422);
+        }
+        if ($ramMemoryAmount > $motherboard->ramMemorySlots || $ramMemoryAmount < 1) {
+            return data([
+                'ramMemory' => 'Quantidade de memórias RAM é maior do que a quantidade de slots presentes na placa-mãe e deve ter nom minimo uma'
+            ], 422);
+        }
+        if ($graphicCardAmount > $motherboard->pciSlots || $graphicCardAmount < 1) {
+            return data([
+                'graphicCard' => 'Quantidade de placas de vídeo é maior do que a quantidade de slots PCI Express na placamãe e deve ter nom minimo uma'
+            ], 422);
+        }
+
+
+        switch ($store->storageDeviceInterface) {
+            case 'sata':
+                if ($amount > $motherboard->sataSlots) {
+                    return data([
+                        'storageDevices' => 'Quantidade de dispositivos de armazenamento do tipo SATA é maior do que a quantidade de
+slots SATA na placa mãe'
+                    ], 422);
+                }
+                break;
+            default:
+                if ($amount > $motherboard->m2Slots) {
+                    return data([
+                        'storageDevices' => 'Quantidade de dispositivos de armazenamento do tipo M2 é maior do que a quantidade de
+slots M2 na placa mãe'
+                    ], 422);
+                }
+                break;
+        }
+
+        if ($amount < 1 || $storageDeviceId < 1) {
+            return data([
+                'storageDevices' => 'Soma total de dispositivos de armazenamento é igual a zero deve ter ao menos um '
+            ], 422);
+        }
+        if ($graphicCardAmount > 1 && $grafic->supportMultiGpu < 1) {
+            return data([
+                'graphicCard' => 'Quantidade de placas de vídeo é maior que 1 o modelo de placa de vídeo não suporta
+SLI/Crossfire'
+            ], 422);
+        }
+        if ($power->potency <  $grafic->minimumPowerSupply * $graphicCardAmount) {
+            return data([
+                'powerSupply' => 'Potência da fonte de alimentação é menor do que a potência mínima da placa de vídeo multiplicada pela quantidade de placas de vídeo'
+            ], 422);
+        }
+
+
+
+        return data([
+            'message' => 'Máquina válida'
+        ], 200);
     }
-    public function Listmotherboards(Request $params){
+    public function Listmotherboards(Request $params)
+    {
         $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
         $pagesize =  $params->pageSize ??  20;
         $pages  =   $params->page ?? 1;
         $offset = ($pages - 1)  * $pagesize;
-        
+
         $data = motherboard::all();
         $all = [];
         foreach ($data as $item) {
             $all[] = [
+                'id' => $item->id,
                 'name' => $item->name,
                 'imageUrl' => $url . $item->imageUrl,
                 'brandId' => $item->brandId,
@@ -247,20 +328,21 @@ class AllController extends Controller
         }
 
         $results = array_slice($all, $offset, $pagesize);
-        return response()->json([$results],200);
-
+        return response()->json([$results], 200);
     }
-    public function Listprocessor(Request $params){
+    public function Listprocessor(Request $params)
+    {
         $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
         $pagesize =  $params->pageSize ??  20;
         $pages  =   $params->page ?? 1;
         $offset = ($pages - 1)  * $pagesize;
-        
+
         $data = processor::all();
         $all = [];
         foreach ($data as $item) {
             $all[] = [
+                'id' => $item->id,
                 'name' => $item->name,
                 'imageUrl' => $url . $item->imageUrl,
                 'brandId' => $item->brandId,
@@ -274,44 +356,46 @@ class AllController extends Controller
         }
 
         $results = array_slice($all, $offset, $pagesize);
-        return response()->json(($results),200);
-
+        return response()->json(($results), 200);
     }
-    public function Listrammemory(Request $params){
+    public function Listrammemory(Request $params)
+    {
         $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
         $pagesize =  $params->pageSize ??  20;
         $pages  =   $params->page ?? 1;
         $offset = ($pages - 1)  * $pagesize;
-        
+
         $data = rammemory::all();
         $all = [];
         foreach ($data as $item) {
             $all[] = [
+                'id' => $item->id,
                 'name' => $item->name,
                 'imageUrl' => $url . $item->imageUrl,
                 'brandId' => $item->brandId,
-                            'size' => $item->size,
-                            'ramMemoryTypeId ' => $item->ramMemoryTypeId,
-                            'frequency' => $item->frequency,
+                'size' => $item->size,
+                'ramMemoryTypeId ' => $item->ramMemoryTypeId,
+                'frequency' => $item->frequency,
             ];
         }
 
         $results = array_slice($all, $offset, $pagesize);
-        return response()->json(($results),200);
-
+        return response()->json(($results), 200);
     }
-    public function Liststoragedevice(Request $params){
+    public function Liststoragedevice(Request $params)
+    {
         $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
         $pagesize =  $params->pageSize ??  20;
         $pages  =   $params->page ?? 1;
         $offset = ($pages - 1)  * $pagesize;
-        
+
         $data = storagedevice::all();
         $all = [];
         foreach ($data as $item) {
             $all[] = [
+                'id' => $item->id,
                 'name' => $item->name,
                 'imageUrl' => $url . $item->imageUrl,
                 'brandId' => $item->brandId,
@@ -322,20 +406,21 @@ class AllController extends Controller
         }
 
         $results = array_slice($all, $offset, $pagesize);
-        return response()->json(($results),200);
-
+        return response()->json(($results), 200);
     }
-    public function Listgraphiccard(Request $params){
+    public function Listgraphiccard(Request $params)
+    {
         $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
         $pagesize =  $params->pageSize ??  20;
         $pages  =   $params->page ?? 1;
         $offset = ($pages - 1)  * $pagesize;
-        
+
         $data = graphiccard::all();
         $all = [];
         foreach ($data as $item) {
             $all[] = [
+                'id' => $item->id,
                 'name' => $item->name,
                 'imageUrl' => $url . $item->imageUrl,
                 'brandId' => $item->brandId,
@@ -347,20 +432,21 @@ class AllController extends Controller
         }
 
         $results = array_slice($all, $offset, $pagesize);
-        return response()->json(($results),200);
-
+        return response()->json(($results), 200);
     }
-    public function Listpowersupply(Request $params){
+    public function Listpowersupply(Request $params)
+    {
         $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
         $pagesize =  $params->pageSize ??  20;
         $pages  =   $params->page ?? 1;
         $offset = ($pages - 1)  * $pagesize;
-        
+
         $data = powersupply::all();
         $all = [];
         foreach ($data as $item) {
             $all[] = [
+                'id' => $item->id,
                 'name' => $item->name,
                 'imageUrl' => $url . $item->imageUrl,
                 'brandId' => $item->brandId,
@@ -370,38 +456,40 @@ class AllController extends Controller
         }
 
         $results = array_slice($all, $offset, $pagesize);
-        return response()->json(($results),200);
-
+        return response()->json(($results), 200);
     }
-    public function Listbrand(Request $params){
+    public function Listbrand(Request $params)
+    {
 
         $pagesize =  $params->pageSize ??  20;
         $pages  =   $params->page ?? 1;
         $offset = ($pages - 1)  * $pagesize;
-        
+
         $data = Brand::all();
         $all = [];
         foreach ($data as $item) {
             $all[] = [
+                'id' => $item->id,
                 'name' => $item->name,
             ];
         }
 
         $results = array_slice($all, $offset, $pagesize);
-        return response()->json(($results),200);
-
+        return response()->json(($results), 200);
     }
-    public function Listmachine(Request $params){
+    public function Listmachine(Request $params)
+    {
         $url = "http://127.0.0.1:8000/XX/AlatechMachines/api/images/";
 
         $pagesize =  $params->pageSize ??  20;
         $pages  =   $params->page ?? 1;
         $offset = ($pages - 1)  * $pagesize;
-        
+
         $data = machine::all();
         $all = [];
         foreach ($data as $item) {
             $all[] = [
+                'id' => $item->id,
                 'name' => $item->name,
                 'imageUrl' => $url . $item->imageUrl,
                 'description' => $item->description,
@@ -416,8 +504,7 @@ class AllController extends Controller
         }
 
         $results = array_slice($all, $offset, $pagesize);
-        return response()->json(($results),200);
-
+        return response()->json(($results), 200);
     }
     // public function ListItems(Request $params)
     // {
