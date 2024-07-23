@@ -14,6 +14,7 @@ use App\Models\graphiccard;
 use App\Models\powersupply;
 use App\Models\machine;
 
+
 class AllController extends Controller
 {
     public function getImages($id = null)
@@ -62,6 +63,21 @@ class AllController extends Controller
 
         return error('', '',204);
 
+    }
+    public function Searchitem(Request $params){
+
+        $a = $_SERVER['REQUEST_URI'];
+        $clear = explode('?', $a);
+        $clear = explode('/', $clear[0]);
+        $search = end($clear);
+
+        $pagesize = $params->pagesize ?? 20;
+        $page = $params->page ?? 1;
+        $q = $params->q ?? null;
+        
+        $exist = DB::table($search)->where('name', "$q")->get();
+        // $exist = graphiccard::where('name', 'GeForce RTX 2070 Super XC Ultra + Overclocked')->get();
+        return $exist;
     }
     public function ListItems(Request $params)
     {

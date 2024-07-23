@@ -19,6 +19,7 @@ Route::prefix('AlatechMachines/api')->group(function(){
     Route::post('/login', [UserController::class, 'login']);
     Route::delete('/delete', [UserController::class, 'logOutUser'])->middleware('jwt');
     Route::delete('/machines/{id?}', [AllController::class, 'removeMachine'])->middleware('jwt');
-    Route::get('/images/{id?}', [AllController::class, 'getImages']);
-    Route::get('/list', [AllController::class, 'ListItems']);
+    Route::get('/images/{id?}', [AllController::class, 'getImages'])->middleware('jwt');
+    Route::get('/list', [AllController::class, 'ListItems'])->middleware('jwt');
+    Route::get('/search/{category?}/{q?}/{pagesize?}/{page?}', [AllController::class, 'Searchitem'])->middleware('jwt');
 });
