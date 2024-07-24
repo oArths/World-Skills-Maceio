@@ -49,7 +49,7 @@ class AllController extends Controller
         $file = file_get_contents($filePath);
         $encode = base64_encode($file);
         header("Content-type : $mimeType");
-        return  error('a', $encode);
+        return  data($encode, 200);
     }
     public function removeMachine($id = null)
     {
@@ -65,20 +65,21 @@ class AllController extends Controller
 
         return error('', '', 204);
     }
-    public function CreateMachine (Request $machine){
+    public function CreateMachine(Request $machine)
+    {
 
-
-        $id  = $machine->id ?? null;
+        $name  = $machine->name ?? null;
+        $description  = $machine->description ?? null;
         $motherboardId  = $machine->motherboardId ?? null;
         $powerSupplyId  = $machine->powerSupplyId ?? null;
         $processorId  = $machine->processorId ?? null;
         $ramMemoryId  = $machine->ramMemoryId ?? null;
         $ramMemoryAmount  = $machine->ramMemoryAmount ?? null;
-        $storageDeviceId  = $machine->storageDevices['storageDeviceId'] ?? null;
-        $amount  = $machine->storageDevices['amount'] ?? null;
+        $storageDeviceId  = $machine->storageDevices[0]['storageDeviceId'] ?? null;
+        $amount  = $machine->storageDevices[0]['amount'] ?? null;
         $graphicCardId  = $machine->graphicCardId ?? null;
         $graphicCardAmount  = $machine->graphicCardAmount ?? null;
-        $image  = $machine->imageUrl ?? null;
+        $image  = $machine->imageBase64 ?? null;
 
         if (!$motherboardId) {
             return data([
@@ -90,8 +91,10 @@ class AllController extends Controller
                 'powerSupplyId' => 'É necessario ao menos uma powerSupplyId'
             ]);
         }
-        if(!$motherboardId || !$powerSupplyId || !$processorId || 
-        !$ramMemoryAmount || !$storageDeviceId || !$amount || ! $graphicCardId || !$graphicCardAmount){
+        if (
+            !$motherboardId || !$powerSupplyId || !$processorId ||
+            !$ramMemoryAmount || !$storageDeviceId || !$amount || !$graphicCardId || !$graphicCardAmount || !$image
+        ) {
             return data([
                 'all' => 'todos os items são obrigatorios'
             ], 422);
@@ -104,11 +107,11 @@ class AllController extends Controller
         $store = storagedevice::find($storageDeviceId);
         $grafic = graphiccard::find($graphicCardId);
 
-        if(!$processor & !$memory && !$store && !$grafic){
+        if (!$processor & !$memory && !$store && !$grafic) {
             return data([
                 'message' => 'Máquina válida'
             ], 200);
-        } 
+        }
         if ($motherboard->socketTypeId !== $processor->socketTypeId) {
             return data([
                 'motherboard' => 'Tipo de soquete da placa-mãe é diferente do tipo de soquete do processador'
@@ -171,57 +174,84 @@ SLI/Crossfire'
                 'powerSupply' => 'Potência da fonte de alimentação é menor do que a potência mínima da placa de vídeo multiplicada pela quantidade de placas de vídeo'
             ], 422);
         }
-        
-        $machineUpdate = [
-            "name" => "a",
-            "description" => "s",
-            "motherboardId"=> $motherboardId,
-            "powerSupplyId"=> $powerSupplyId,
-            "processorId"=> $processorId,
-            "ramMemoryId"=> $ramMemoryId,
+        $clera = $image;
+
+        if (strpos($image, ',') !== false) {
+            $position = strpos($image, ',');
+            $clera = substr($image, $position + 1);
+        }
+
+        // return  $clera;
+        $clearimage =  base64_decode($clera);
+
+        $nameimage = time();
+
+        $publicpath = public_path('images');
+        $imagepath = $publicpath . "/" . $nameimage . ".png";
+        file_put_contents($imagepath, $clearimage);
+
+
+        $machine = [
+            "name" => $name,
+            "description" => $description,
+            "motherboardId" => $motherboardId,
+            "powerSupplyId" => $powerSupplyId,
+            "processorId" => $processorId,
+            "ramMemoryId" => $ramMemoryId,
             "ramMemoryAmount" => $ramMemoryAmount,
             "graphicCardId" => $graphicCardId,
-            "imageUrl" => 'a',
-            "graphicCardAmount"=> $graphicCardAmount
-            
+            "imageUrl" => $nameimage,
+            "graphicCardAmount" => $graphicCardAmount
+
         ];
+        $Newmachine = machine::create($machine);
+
         $storegeUpdate = [
-            "machineId" => $id,
-            "storageDeviceId"=> $storageDeviceId,
-            "amount"=> $amount,
+            "machineId" => $Newmachine->id,
+            "storageDeviceId" => $storageDeviceId,
+            "amount" => $amount,
         ];
-            $update = machine::where('id', $id)->update($machine);
-            // $update = machinehasstoragedevice::where('id', $id )->where('machinehasstoragedevice', $)->update($machine);
-            // return $storege; 
+        machinehasstoragedevice::create($storegeUpdate);
 
-
+        return data(['id' => $Newmachine->id], 200);
     }
-    public function UpdateMachine (Request $machine){
+    public function UpdateMachine($id)
+    {
+        $machine = request();
 
-
+        $description  = $machine->description ?? null;
+        $name  = $machine->name ?? null;
+        $idMachine = $id ?? null;
         $motherboardId  = $machine->motherboardId ?? null;
         $powerSupplyId  = $machine->powerSupplyId ?? null;
         $processorId  = $machine->processorId ?? null;
         $ramMemoryId  = $machine->ramMemoryId ?? null;
         $ramMemoryAmount  = $machine->ramMemoryAmount ?? null;
-        $storageDeviceId  = $machine->storageDevices['storageDeviceId'] ?? null;
-        $amount  = $machine->storageDevices['amount'] ?? null;
+        $storageDeviceId  = $machine->storageDevices[0]['storageDeviceId'] ?? null;
+        $amount  = $machine->storageDevices[0]['amount'] ?? null;
         $graphicCardId  = $machine->graphicCardId ?? null;
         $graphicCardAmount  = $machine->graphicCardAmount ?? null;
-        $image  = $machine->imageUrl ?? null;
+        $image  = $machine->imageBase64 ?? null;
 
+        if (!$idMachine) {
+            return data([
+                'machine' => 'É necessario o id da maquina',
+            ], 422);
+        }
         if (!$motherboardId) {
             return data([
                 'motherboardId' => 'É necessario ao menos uma motherboardId',
-            ]);
+            ], 422);
         }
         if (!$powerSupplyId) {
             return data([
                 'powerSupplyId' => 'É necessario ao menos uma powerSupplyId'
-            ]);
+            ], 422);
         }
-        if(!$motherboardId || !$powerSupplyId || !$processorId || 
-        !$ramMemoryAmount || !$storageDeviceId || !$amount || ! $graphicCardId || !$graphicCardAmount){
+        if (
+            !$motherboardId || !$powerSupplyId || !$processorId ||
+            !$ramMemoryAmount || !$storageDeviceId || !$amount || !$graphicCardId || !$graphicCardAmount
+        ) {
             return data([
                 'all' => 'todos os items são obrigatorios'
             ], 422);
@@ -234,11 +264,11 @@ SLI/Crossfire'
         $store = storagedevice::find($storageDeviceId);
         $grafic = graphiccard::find($graphicCardId);
 
-        if(!$processor & !$memory && !$store && !$grafic){
+        if (!$processor & !$memory && !$store && !$grafic) {
             return data([
                 'message' => 'Máquina válida'
             ], 200);
-        } 
+        }
         if ($motherboard->socketTypeId !== $processor->socketTypeId) {
             return data([
                 'motherboard' => 'Tipo de soquete da placa-mãe é diferente do tipo de soquete do processador'
@@ -301,29 +331,56 @@ SLI/Crossfire'
                 'powerSupply' => 'Potência da fonte de alimentação é menor do que a potência mínima da placa de vídeo multiplicada pela quantidade de placas de vídeo'
             ], 422);
         }
-        
-        $machineNew = machine::create([
-            "name" => "a",
-            "description" => "s",
-            "motherboardId"=> $motherboardId,
-            "powerSupplyId"=> $powerSupplyId,
-            "processorId"=> $processorId,
-            "ramMemoryId"=> $ramMemoryId,
+
+        $nameimage = '';
+        if ($image) {
+
+            $clera = $image;
+
+            if (strpos($image, ',') !== false) {
+                $position = strpos($image, ',');
+                $clera = substr($image, $position + 1);
+            }
+
+            // return  $clera;
+            $clearimage =  base64_decode($clera);
+
+            $nameimage = time();
+
+            $publicpath = public_path('images');
+            $imagepath = $publicpath . "/" . $nameimage . ".png";
+            file_put_contents($imagepath, $clearimage);
+        }
+
+        $oldDevice = machinehasstoragedevice::where('machineId', $idMachine)->first();
+        $machineNew = [
+            "name" => $name,
+            "description" => $description,
+            "motherboardId" => $motherboardId,
+            "powerSupplyId" => $powerSupplyId,
+            "processorId" => $processorId,
+            "ramMemoryId" => $ramMemoryId,
             "ramMemoryAmount" => $ramMemoryAmount,
             "graphicCardId" => $graphicCardId,
-            "imageUrl" => 'a',
-            "graphicCardAmount"=> $graphicCardAmount
-            
-        ]);
-        $storege = machinehasstoragedevice::create([
-            "machineId" => $machineNew->id,
-            "storageDeviceId"=> $storageDeviceId,
-            "amount"=> $amount,
-        ]);
-            
-            return $storege; 
+            "graphicCardAmount" => $graphicCardAmount
 
+        ];
+        if ($image) {
+            $machineNew['imageUrl'] = $nameimage;
+            machine::where('id', $idMachine)->update($machineNew);
+        } else {
+            machine::where('id', $idMachine)->update($machineNew);
+        }
+        $storege = [
+            "machineId" => $idMachine,
+            "storageDeviceId" => $storageDeviceId,
+            "amount" => $amount,
+        ];
+        machinehasstoragedevice::where('machineId', $idMachine)->where('storageDeviceId', $oldDevice->storageDeviceId)->where('amount', $oldDevice->amount)->update($storege);
 
+        return data([
+            array_merge($machineNew, $storege)
+        ], 200);
     }
     public function Searchitem(Request $params)
     {
@@ -345,7 +402,7 @@ SLI/Crossfire'
         if (!$q) {
             $exist = DB::table($search)->get();
         } else {
-            $exist = DB::table($search)->where('name','LIKE', '%'.$q.'%')->get();
+            $exist = DB::table($search)->where('name', 'LIKE', '%' . $q . '%')->get();
         }
         $all = [];
 
@@ -470,21 +527,12 @@ SLI/Crossfire'
         $processorId  = $machine->processorId ?? null;
         $ramMemoryId  = $machine->ramMemoryId ?? null;
         $ramMemoryAmount  = $machine->ramMemoryAmount ?? null;
-        $storageDeviceId  = $machine->storageDevices['storageDeviceId'] ?? null;
-        $amount  = $machine->storageDevices['amount'] ?? null;
+        $storageDeviceId  = $machine->storageDevices[0]['storageDeviceId'] ?? null;
+        $amount  = $machine->storageDevices[0]['amount'] ?? null;
         $graphicCardId  = $machine->graphicCardId ?? null;
         $graphicCardAmount  = $machine->graphicCardAmount ?? null;
+        $errors = [];
 
-        if (!$motherboardId) {
-            return data([
-                'motherboardId' => 'É necessario ao menos uma motherboardId',
-            ]);
-        }
-        if (!$powerSupplyId) {
-            return data([
-                'powerSupplyId' => 'É necessario ao menos uma powerSupplyId'
-            ]);
-        }
 
         //soquete placa mae porcessador
         $motherboard = motherboard::find($motherboardId);
@@ -493,75 +541,90 @@ SLI/Crossfire'
         $memory = rammemory::find($ramMemoryId);
         $store = storagedevice::find($storageDeviceId);
         $grafic = graphiccard::find($graphicCardId);
-        if(!$processor & !$memory && !$store && !$grafic){
+
+        if ($motherboard === null) {
+            $errors['motherboardId']  = 'É necessario ao menos uma motherboardId';
+        }
+        if ($power === null) {
+            $errors['powerSupplyId']  = 'É necessario ao menos uma powerSupplyId';
+        }
+        // return $errors;
+        if (!$processor & !$memory && !$store && !$grafic && $power && $motherboard) {
             return data([
                 'message' => 'Máquina válida'
             ], 200);
-        } 
-        if ($motherboard->socketTypeId !== $processor->socketTypeId) {
-            return data([
-                'motherboard' => 'Tipo de soquete da placa-mãe é diferente do tipo de soquete do processador'
-            ], 422);
         }
-        if ($processor->tdp > $motherboard->maxTdp) {
-            return data([
-                'processor' => 'TDP do processador é maior do que o TDP máximo suportado pela placa-mãe'
-            ], 422);
+        // if ($errors) {
+        //     return data($errors, 422);
+        // }
+        if (isset($motherboard) && isset($processor)) {
+
+            if ($motherboard->socketTypeId !== $processor->socketTypeId) {
+                $errors['motherboard']  = 'Tipo de soquete da placa-mãe é diferente do tipo de soquete do processador';
+            }
+            if ($processor->tdp > $motherboard->maxTdp) {
+                $errors['processor'] = 'TDP do processador é maior do que o TDP máximo suportado pela placa-mãe';
+            }
         }
-        if ($memory->ramMemoryTypeId !== $motherboard->ramMemoryTypeId) {
-            return data([
-                'ramMemory' => 'Tipo de memória RAM da placa-mãe é diferente do tipo da memória RAM'
-            ], 422);
+        if (isset($memory) && isset($motherboard)) {
+
+            if ($memory->ramMemoryTypeId !== $motherboard->ramMemoryTypeId) {
+                $errors['ramMemory'] = 'Tipo de memória RAM da placa-mãe é diferente do tipo da memória RAM';
+            }
         }
-        if ($ramMemoryAmount > $motherboard->ramMemorySlots || $ramMemoryAmount < 1) {
-            return data([
-                'ramMemory' => 'Quantidade de memórias RAM é maior do que a quantidade de slots presentes na placa-mãe e deve ter nom minimo uma'
-            ], 422);
+        if (isset($ramMemoryAmount) && isset($motherboard)) {
+
+            if ($ramMemoryAmount > $motherboard->ramMemorySlots || $ramMemoryAmount < 1) {
+                $errors['ramMemory'] = 'Quantidade de memórias RAM é maior do que a quantidade de slots presentes na placa-mãe e deve ter nom minimo uma';
+            }
         }
-        if ($graphicCardAmount > $motherboard->pciSlots || $graphicCardAmount < 1) {
-            return data([
-                'graphicCard' => 'Quantidade de placas de vídeo é maior do que a quantidade de slots PCI Express na placamãe e deve ter nom minimo uma'
-            ], 422);
+        if (isset($graphicCardAmount) && isset($motherboard)) {
+            if ($graphicCardAmount > $motherboard->pciSlots || $graphicCardAmount < 1) {
+                $errors['graphicCard'] = 'Quantidade de placas de vídeo é maior do que a quantidade de slots PCI Express na placamãe e deve ter nom minimo uma';
+            }
         }
 
 
-        switch ($store->storageDeviceInterface) {
-            case 'sata':
-                if ($amount > $motherboard->sataSlots) {
-                    return data([
-                        'storageDevices' => 'Quantidade de dispositivos de armazenamento do tipo SATA é maior do que a quantidade de
-slots SATA na placa mãe'
-                    ], 422);
-                }
-                break;
-            default:
-                if ($amount > $motherboard->m2Slots) {
-                    return data([
-                        'storageDevices' => 'Quantidade de dispositivos de armazenamento do tipo M2 é maior do que a quantidade de
-slots M2 na placa mãe'
-                    ], 422);
-                }
-                break;
+        if (isset($store) && isset($motherboard)) {
+            switch ($store->storageDeviceInterface) {
+                case 'sata':
+                    if ($amount > $motherboard->sataSlots) {
+                        $errors['storageDevices'] = 'Quantidade de dispositivos de armazenamento do tipo SATA é maior do que a quantidade de
+slots SATA na placa mãe';
+                    }
+                    break;
+                default:
+                    if ($amount > $motherboard->m2Slots) {
+                        $errors['storageDevices'] = 'Quantidade de dispositivos de armazenamento do tipo M2 é maior do que a quantidade de
+slots M2 na placa mãe';
+                    }
+                    break;
+            }
+        }
+        if (isset($amount) && isset($storageDeviceId)) {
+
+            if ($amount < 1 || $storageDeviceId < 1) {
+                $errors['storageDevices'] = 'Soma total de dispositivos de armazenamento é igual a zero deve ter ao menos um ';
+            }
         }
 
-        if ($amount < 1 || $storageDeviceId < 1) {
-            return data([
-                'storageDevices' => 'Soma total de dispositivos de armazenamento é igual a zero deve ter ao menos um '
-            ], 422);
-        }
-        if ($graphicCardAmount > 1 && $grafic->supportMultiGpu < 1) {
-            return data([
-                'graphicCard' => 'Quantidade de placas de vídeo é maior que 1 o modelo de placa de vídeo não suporta
-SLI/Crossfire'
-            ], 422);
-        }
-        if ($power->potency <  $grafic->minimumPowerSupply * $graphicCardAmount) {
-            return data([
-                'powerSupply' =>'Potência da fonte de alimentação é menor do que a potência mínima da placa de vídeo multiplicada  pela quantidade de placas de vídeo'
-            ], 422);
+        if (isset($graphicCardAmount) && isset($grafic)) {
+            if ($graphicCardAmount > 1 && $grafic->supportMultiGpu < 1) {
+                $errors['graphicCard'] = 'Quantidade de placas de vídeo é maior que 1 o modelo de placa de vídeo não suporta
+    SLI/Crossfire';
+            }
         }
 
+        if (isset($power) && isset($grafic)) {
 
+            if ($power->potency <  $grafic->minimumPowerSupply * $graphicCardAmount) {
+                $errors['powerSupply'] = 'Potência da fonte de alimentação é menor do que a potência mínima da placa de vídeo multiplicada  pela quantidade de placas de vídeo';
+            }
+        }
+
+        if ($errors) {
+            return data($errors, 422);
+        }
 
         return data([
             'message' => 'Máquina válida'
