@@ -19,7 +19,7 @@ Route::prefix('AlatechMachines/api')->group(function(){
     Route::post('/login', [UserController::class, 'login']);
     Route::delete('/delete', [UserController::class, 'logOutUser'])->middleware('jwt');
     Route::delete('/machines/{id?}', [AllController::class, 'removeMachine'])->middleware('jwt');
-    Route::get('/images/{id?}', [AllController::class, 'getImages'])->middleware('jwt');
+    Route::get('/images/{id?}', [AllController::class, 'getImages']);
     Route::get('/list', [AllController::class, 'ListItems'])->middleware('jwt');
 
     Route::get('/list/motherboards', [AllController::class, 'Listmotherboards'])->middleware('jwt');
@@ -34,6 +34,7 @@ Route::prefix('AlatechMachines/api')->group(function(){
 
     Route::get('/search/{category?}/{q?}/{pagesize?}/{page?}', [AllController::class, 'Searchitem'])->middleware('jwt');
     Route::post('/machine', [AllController::class, 'CreateMachine'])->middleware('jwt');
+    Route::put('/machine/{id?}', [AllController::class, 'UpdateMachine'])->middleware('jwt');
     Route::post('/verifyCompatibility', [AllController::class, 'VerifyComp'])->middleware('jwt');
     
     Route::any('/{any}', function () {
