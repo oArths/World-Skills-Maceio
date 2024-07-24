@@ -33,7 +33,9 @@ Route::prefix('AlatechMachines/api')->group(function(){
 
 
     Route::get('/search/{category?}/{q?}/{pagesize?}/{page?}', [AllController::class, 'Searchitem'])->middleware('jwt');
+    Route::post('/machine', [AllController::class, 'CreateMachine'])->middleware('jwt');
     Route::post('/verifyCompatibility', [AllController::class, 'VerifyComp'])->middleware('jwt');
+    
     Route::any('/{any}', function () {
         return response()->json([], 403);
     })->middleware('jwt');
