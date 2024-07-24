@@ -10,15 +10,15 @@ class machine extends Model
     use HasFactory;
 
     protected $table = 'machine';
-
+    public $timestamps = false;
     protected $fillable  = [
-        '        id',
+        'id',
         'name',
         'description',
-        '	imageUrl',
+        'imageUrl',
         'motherboardId',
         'processorId',
-        '	ramMemoryId',
+        'ramMemoryId',
         'ramMemoryAmount',
         'graphicCardId',
         'graphicCardAmount',

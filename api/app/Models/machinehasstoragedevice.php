@@ -9,8 +9,9 @@ class machinehasstoragedevice extends Model
 {
     use HasFactory;
     protected $table = 'machinehasstoragedevice';
+    public $timestamps = false;
 
     protected $fillable  = [
-        'machineId', 'storageDeviceId', 'amoun',
+        'machineId', 'storageDeviceId', 'amount',
     ];
 }
