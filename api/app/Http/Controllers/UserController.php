@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\JwtController;
+use App\Http\Middleware\JwtValidation;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 // use App\Http\Requests\UserRequest;
@@ -14,6 +15,7 @@ class UserController extends Controller
 
     public function login(Request $parms){
         $jwt = new JwtController;
+        $tokenValid = new JwtValidation;
 
         if(!isset($parms['username'])  || !isset($parms['password'])){
             return error('message','Credenciais inválidas', 422 );
@@ -23,10 +25,17 @@ class UserController extends Controller
         }
 
         $user = User::where('username', $parms['username'])->first();
-        
+        $valid = $tokenValid->validToken($user->accessToken);
+
+        if($valid){
+            return data([
+                'message' => 'Usuário já autenticado'
+            ],403);
+        }
         if(!$user){
             return error('message','Credenciais inválidas', 422 );
         }
+
         if(strlen($user->password) !== 64){
             $hashPassword = hash('sha256', $user->password);
             $user->update(['password'=>  $hashPassword]); 
